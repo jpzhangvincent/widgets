@@ -1,0 +1,59 @@
+<iframe id="igraph" scrolling="no" style="border:none; display:inline-block;" seamless="seamless"
+         src="https://plot.ly/~chris/3288.embed" height="600" width="600"></iframe>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="https://rawgit.com/mindmup/editable-table/master/mindmup-editabletable.js"></script>
+
+<div class="pure-menu pure-menu-open" style="width: 300px; display:inline-block; float: left;">
+    <a class="pure-menu-heading">Toggle Traces</a>
+
+    <ul>
+        <li><a>Trace 0</a></li>
+        <li><a>Trace 1</a></li>
+        <li><a>Trace 2</a></li>
+        <li><a>Trace 3</a></li>
+        <li><a>Trace 4</a></li>
+        <li><a>Trace 5</a></li>
+    </ul>
+</div>
+
+<script type="text/Javascript">
+
+    var plot = $('#igraph')[0].contentWindow;
+
+    var pinger = setInterval(function(){
+        console.log('posting ping');
+        plot.postMessage({ping: true}, 'https://plot.ly');
+    }, 5000);
+
+    window.addEventListener('message', function(e) {
+        var message = e.data;
+        if(message==='pong') {
+            clearInterval(pinger);
+
+            $('li').click(function(){
+                if($(this).hasClass('pure-menu-open')){
+                    $(this).removeClass('pure-menu-open');
+                }
+                else {
+                    $(this).addClass('pure-menu-open');
+                }
+
+                var visibility_state = [];
+                $('li').each(function(idx){
+                    if($(this).hasClass('pure-menu-open')){
+                        visibility_state.push(false);
+                    } else {
+                        visibility_state.push(true);
+                    }
+                });
+
+                plot.postMessage({restyle: {visible: visibility_state}}, 'https://plot.ly');
+
+            });
+        }
+    });
+
+</script>
+
+<link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css">
