@@ -1,0 +1,36 @@
+<h4>Open your console and source code to see the messages communicated on hover, click, and zoom.</h4>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+<iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless"
+         src="https://plot.ly/~PlotBot/122.embed" height="600" width="100%"></iframe>
+
+<script type="text/Javascript">
+
+    window.removeEventListener('message');
+    if(typeof(pinger) !== 'undefined') {
+        clearInterval(pinger);
+    }
+
+    var plot = $('#igraph')[0].contentWindow;
+
+    var pinger = setInterval(function(){
+        console.log('posting ping');
+        plot.postMessage({ping: true}, 'https://plot.ly');
+    }, 5000);
+
+    window.addEventListener('message', function(e) {
+        var message = e.data;
+        if(message==='pong') {
+            clearInterval(pinger);
+            console.log('pong received, sending listen requests on zoom, click, and hover');
+            plot.postMessage({listen: ['zoom', 'click', 'hover']}, 'https://plot.ly');
+        } else if (message.type==='hover' ||
+                   message.type==='zoom' ||
+                   message.type==='click' ||
+                   message.type==='unhover') {
+            console.log(message.type, ': ', message);
+        }
+    });
+
+</script>

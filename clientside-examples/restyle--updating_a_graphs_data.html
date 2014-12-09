@@ -1,0 +1,109 @@
+<div style="display: inline;
+            width: 300px;
+            float: left;
+            margin-top: 68px;">
+    Plot this table!<br>
+    Click to edit the numbers in the grid.
+    <table class="pure-table" >
+        <thead>
+            <tr>
+                <th>X<sub>1</sub></th>
+                <th>Y<sub>1</sub></th>
+                <th>X<sub>2</sub></th>
+                <th>Y<sub>2</sub></th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td class="x1">1</td>
+                <td class="y1">10</td>
+
+                <td class="x2">1</td>
+                <td class="y2">16</td>
+            </tr>
+
+            <tr>
+                <td class="x1">2</td>
+                <td class="y1">15</td>
+
+                <td class="x2">2</td>
+                <td class="y2">5</td>
+            </tr>
+
+            <tr>
+                <td class="x1">3</td>
+                <td class="y1">13</td>
+
+                <td class="x2">3</td>
+                <td class="y2">11</td>
+            </tr>
+
+            <tr>
+                <td class="x1">4</td>
+                <td class="y1">17</td>
+
+                <td class="x2">4</td>
+                <td class="y2">9</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<iframe id="igraph" scrolling="no" style="border:none; display:inline-block;" seamless="seamless"
+         src="https://plot.ly/~chris/3287.embed" height="600" width="600"></iframe>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="https://rawgit.com/mindmup/editable-table/master/mindmup-editabletable.js"></script>
+
+<script type="text/Javascript">
+
+
+    window.removeEventListener('message');
+    if(typeof(pinger) !== 'undefined') {
+        clearInterval(pinger);
+    }
+
+    var plot = $('#igraph')[0].contentWindow;
+
+    var pinger = setInterval(function(){
+        console.log('posting ping');
+        plot.postMessage({ping: true}, 'https://plot.ly');
+    }, 5000);
+
+    window.addEventListener('message', function(e) {
+        var message = e.data;
+        if(message==='pong') {
+            clearInterval(pinger);
+
+            $('table').editableTableWidget();
+
+            $('table td').on('change', function(evt, newValue) {
+                // do something with the new cell value
+                var x1 = [],
+                    y1 = [],
+                    x2 = [],
+                    y2 = [];
+                $('.x1').each(function(index){
+                    x1.push($(this).text());
+                });
+                $('.y1').each(function(index){
+                    y1.push($(this).text());
+                });
+                $('.x2').each(function(index){
+                    x2.push($(this).text());
+                });
+                $('.y2').each(function(index){
+                    y2.push($(this).text());
+                });
+
+                plot.postMessage({restyle: {'x': [x1, x2], 'y': [y1, y2]}}, 'https://plot.ly')
+
+            });
+
+        }
+    });
+
+</script>
+
+<link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css">
