@@ -1,9 +1,11 @@
-<h4>Open your console and source code to see the messages communicated on hover, click, and zoom.</h4>
+<h4>Hover, zoom, and click!</h4>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 
 <iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless"
          src="https://plot.ly/~PlotBot/122.embed" height="600" width="100%"></iframe>
+
+<div id="messages"></div>
 
 <script type="text/Javascript">
 
@@ -29,7 +31,7 @@
                    message.type==='zoom' ||
                    message.type==='click' ||
                    message.type==='unhover') {
-            console.log(message.type, ': ', message);
+            $('#messages').text(message.type + ': ' + JSON.stringify(message));
         }
     });
 
