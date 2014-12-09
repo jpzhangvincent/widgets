@@ -1,7 +1,7 @@
 widgets
 =======
 
-Examples that customizing the interactivity of Plotly graphs
+Customize the interactivity of your Plotly graphs
 
 #### Client-Side Examples
 
